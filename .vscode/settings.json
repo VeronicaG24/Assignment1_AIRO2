@@ -1,9 +1,9 @@
 {
-    "defaultDomain": "DomainEx7.pddl",
+    "defaultDomain": "domain.pddl",
     "defaultOptions": "",
     "cases": [
         {
-        "problem": "Ex7.pddl"
+        "problem": "problem.pddl"
         }
     ]
 }

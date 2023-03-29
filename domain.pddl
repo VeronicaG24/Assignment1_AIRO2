@@ -6,29 +6,30 @@
     (:requirements :strips :fluents :durative-actions :timed-initial-literals :typing :conditional-effects :negative-preconditions :duration-inequalities :equality)
 
     (:types 
+        location
+        robot
         drinkHot
         drinkCold
-        location
-        slot
-        waiter
-        barista
-        slot
     )
 
     ; un-comment following line if constants are needed
     (:constants 
-        maxNumPlaceTray - number;maximum number of drinks in a tray
-        table0 table1 table2 table3 table4 - location ;number of tables+bar
+        maxNumPlaceTray - number ;maximum number of drinks in a tray
+        bar table1 table2 table3 table4 - location ;location tables+bar
+        (tableToServe 1 4 - number) ;number of the table to serve
+        (grabber tray - location)
     )
 
     (:init
-         (=maxNumPlaceTray 3)
+        (=maxNumPlaceTray 3)
     )
     (:predicates ;todo: define predicates here
-        (table ?loc-location) ;this stands for the 4 table 
-        (grabber ?loc -location) ; we use it for single drink
+        (waiter ?w -robot)
+        (barista ?b -robot)
+        ;(table ?loc-location) ;this stands for the 4 table 
+        ;(grabber ?loc -location) ; we use it for single drink
         (at ?d ?loc - location) ;stands for barista, waiter or drink at location
-        (tray ?loc -location)   ; tray is a location
+        ;(tray ?loc -location)   ; tray is a location
         (free ?d) ;we use it for waiter, barista and tables
         (dirtyTable ?loc-location) ;dirty table
     )
@@ -38,39 +39,52 @@
         (connection ?l1-location ?l2-location);this is the distance between bar and tables
         (waiterSpeed ?waiter-waiter) ;this is the speed of waiter
         (numPlaceOnTray) ;free places on tray
-        (orderCold ?loc – location) ;number of cold drink per table
-        (orderHot ?loc – location)  ;number of hot drink per table
-        (surfaceTable ?loc – location ) ;stands for the surface of table
+        
+        (toMakeCold ?table – number) ;number of cold drink per table to make
+        (toMakeHot ?table – number)  ;number of hot drink per table to make
+        (toServeCold ?table – number) ;number of cold drink per table to serve
+        (toServeHot ?table – number)  ;number of hot drink per table to serve
+        (servedCold ?table – number) ;number of cold drink per table served
+        (servedHot ?table – number)  ;number of hot drink per table served
+
+        (surfaceTable ?loc – location ) ;stands for the surface of table 
+        (numberTable ?loc – location) ;stands for the number of table
     )
 
 
     (:action pickDrinkHot
-        :parameters (?table0-location ?d -drinkHot ?w -waiter ?loc -location)
+        :parameters (?d -drinkHot ?w -robot)
         :precondition (and
-            (at ?d ?table0)
+            (waiter ?w)
+            (at ?d bar)
+            (at ?w bar)
             (free ?w)
-            (grabber ?table0)
-            (=(+(orderHot ?loc)(orderCold ?loc))1)
+            (=(+(toServeHot tableToServe)(toServeCold tableToServe))1)
         )
         :effect (and
-            (assign(waiterSpeed)2)
+            (not (at ?d bar))
+            (at ?d grabber)
+            (assign(waiterSpeed ?w)2)
             (not(free ?w))
-            (decrease(orderHot ?loc)1)
+            (decrease(toServeHot ?loc)1)
         )
     )
 
-     (:action pickDrinkCold
-        :parameters (?table0-location ?d -drinkCold ?w -waiter ?loc -location)
+    (:action pickDrinkHot
+        :parameters (?d -drinkCold ?w -robot)
         :precondition (and
-            (at ?d ?table0)
+            (waiter ?w)
+            (at ?d bar)
+            (at ?w bar)
             (free ?w)
-            (grabber ?table0 -location)
-            (= (+(orderHot ?loc)(orderCold ?loc))1)
+            (=(+(toServeHot tableToServe)(toServeCold tableToServe))1)
         )
         :effect (and
-            (assign(waiterSpeed)2)
-            (not(free ?w -waiter))
-            (decrease(orderCold ?loc-location))
+            (not (at ?d bar))
+            (at ?d grabber)
+            (assign(waiterSpeed ?w)2)
+            (not(free ?w))
+            (decrease(toServeCold ?loc)1)
         )
     )
 

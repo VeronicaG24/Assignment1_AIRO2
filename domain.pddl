@@ -22,13 +22,13 @@
     )
 
     (:init
-        (=maxNumPlaceTray 3)
+        (=(maxNumPlaceTray) 3)
         (=(table-has-number bar) 0)
         (=(table-has-number table1) 1)
         (=(table-has-number table2) 2)
         (=(table-has-umber table3) 3)
         (=(table-has-number table4) 4)
-        (=(tableMaking)1)
+        (=(tableMaking) 1)
     )
     (:predicates ;todo: define predicates here
         (waiter ?w -robot)

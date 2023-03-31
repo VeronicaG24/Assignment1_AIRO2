@@ -30,6 +30,7 @@
         (=(table-has-number table4) 4)
         (=(tableMaking) 1)
     )
+
     (:predicates ;todo: define predicates here
         (waiter ?w -robot)
         (barista ?b -robot)
@@ -41,7 +42,7 @@
         (drinks-for-table ?table - location) ;total num of drink for table
         (free ?d) ;we use it for waiter, barista and tables
         (dirtyTable ?loc-location) ;dirty table
-        (cleaning ?w-robot)
+        (cleaning ?w-robot) ;table that is being cleaning
     )
 
 
@@ -260,51 +261,51 @@
     (:durative-action move
         :parameters (?t1 ?t2 - location ?w -robot)
         :duration (= ?duration (/(connection ?t1 ?t2)(waiterSpeed ?w)))
-        :condition (and (waiter ?w)
-            (at start (and (at ?w ?t1) (not (free ?t2) (not (cleaning ?w)))
-            ))
+        :condition (and (waiter ?w) 
+            (at start 
+                (and (at ?w ?t1) (not (free ?t2)) (not (cleaning ?w)))
+            )
         )
         :effect (and 
-            (at end (and (not (at ?w ?t1)) (at ?w ?t2)
-            ))
+            (at end 
+                (and (not (at ?w ?t1)) (at ?w ?t2))
+            )
         )
     )
     
     (:durative-action prepareCold
-        :parameters (?b -robot ?d - drinkCold ?table - location)
+        :parameters (?b -robot ?d - drinkCold)
         :duration (= ?duration 3)
         :condition (and (barista ?b)
-            (at start (and (not (at ?d ?table)) (>(toMakeCold tableToServe)0)
-            ))
-            (over all (and 
-            ))
-            (at end (and 
-            ))
+            (at start 
+                (and (>(toMakeCold tableMaking)0) (free ?b))
+            )
         )
         :effect (and 
-            (at start (and (not (free ?b))
-            ))
-            (at end (and (at ?d ?table) (decrease(toMakeCold tableToServe)1) (increase(toServeCold tabletoserve)1) (free ?b)
-            ))
+            (at start 
+                (and (not (free ?b)))
+            )
+            (at end 
+                (and (at ?d bar) (decrease(toMakeCold tableMaking)1) (increase(toServeCold tableMaking)1) (free ?b))
+            )
         )
     )
 
     (:durative-action prepareHot
-        :parameters (?b ?w -robot ?d - drinkHot ?table - location)
+        :parameters (?b ?w -robot ?d - drinkHot)
         :duration (= ?duration 5)
         :condition (and (waiter ?w) (barista ?b)
-            (at start (and (not (at ?d ?table)) (>(toMakeHot tableToServe)0) (free ?w)
-            ))
-            (over all (and
-            ))
-            (at end (and (free ?w)
-            ))
+            (at start 
+                (and (>(toMakeHot tableMaking)0) (free ?b))
+            )
         )
         :effect (and 
-            (at start (and (not (free ?b))
-            ))
-            (at end (and (at ?d ?table) (decrease(toMakeHot tableToServe)1) (increase(toServeHot tabletoserve)1) (free ?b)
-            ))
+            (at start 
+                (and (not (free ?b)))
+            )
+            (at end 
+                (and (at ?d bar) (decrease(toMakeHot tableMaking)1) (increase(toServeHot tableMaking)1) (free ?b))
+            )
         )
     )
     

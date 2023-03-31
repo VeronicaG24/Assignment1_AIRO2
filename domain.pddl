@@ -17,6 +17,7 @@
         (maxNumPlaceTray - number) ;maximum number of drinks in a tray
         (bar table1 table2 table3 table4 - location);location tables+bar
         (tableToServe 1 4 - number) ;number of the table to serve
+        (tableMaking 1 4 - number) ;number of the table that the barista is making the drinks
         (onGrabber onTray - location)
     )
 
@@ -27,6 +28,7 @@
         (=(table-has-number table2) 2)
         (=(table-has-umber table3) 3)
         (=(table-has-number table4) 4)
+        (=(tableMaking)1)
     )
     (:predicates ;todo: define predicates here
         (waiter ?w -robot)
@@ -36,7 +38,7 @@
         ;(grabber ?loc -location) ; we use it for single drink
         (at ?d ?loc) ;stands for barista, waiter or drink at location
         ;(tray ?loc -location)   ; tray is a location
-        (drink-for-table ?d ?table) ;drink for table
+        (drinks-for-table ?table - location) ;total num of drink for table
         (free ?d) ;we use it for waiter, barista and tables
         (dirtyTable ?loc-location) ;dirty table
         
@@ -97,13 +99,15 @@
     )
 
     (:action loadTrayHot
-        :parameters (?d-drinkHot ?w -robot)
+        :parameters (?d-drinkHot ?w -robot ?tray)
         :precondition (and
             (waiter ?w)
             (at ?d bar)
             (>=(numPlaceOnTray)1)
             (at ?w bar)
             (free ?w)
+            (tray ?tray)
+            (at ?tray bar)
             (>(+(toServeHot tableToServe)(toServeCold tableToServe)))1)
         :effect (and
             (decrease(toServeHot tableToServe)1)
@@ -120,6 +124,8 @@
             (>=(numPlaceOnTray)1)
             (at ?w bar)
             (free ?w)
+            (tray ?tray)
+            (at ?tray bar)
             (>(+(toServeHot tableToServe)(toServeCold tableToServe)))1)
         :effect (and
             (decrease(toServeCold tableToServe)1)
@@ -129,16 +135,19 @@
     )
 
     (:action pickTray
-        :parameters (?w -robot)
+        :parameters (?w -robot ?tray)
         :precondition (and
             (waiter ?w)
             (at ?w bar)
             (free ?w)
+            (tray ?tray)
+            (at ?tray bar)
             (or (=(numPlaceOnTray)0) (and((<(numPlaceOnTray)2)(=(+(toServeHot tableToServe)(toServeCold tableToServe))1))))
         )
         :effect (and
             (assign(waiterSpeed ?w)1)
             (not(free ?w))
+            (not (free ?tray))
         )
     )
 
@@ -155,7 +164,7 @@
             (not (at ?d onGrabber))
             (at ?d ?table)
             (decrease(toServeHot tableToServe)1)
-            (decrease(servedHot tableToServe)1)
+            (increase(servedHot tableToServe)1)
         )
     )
 
@@ -172,7 +181,7 @@
             (not (at ?d onGrabber))
             (at ?d ?table)
             (decrease(toServeCold tableToServe)1)
-            (decrease(servedCold tableToServe)1)
+            (increase(servedCold tableToServe)1)
         )
     )
 
@@ -189,7 +198,7 @@
             (not (at ?d onTray))
             (at ?d ?table)
             (decrease(toServeHot tableToServe)1)
-            (decrease(servedHot tableToServe)1)
+            (increase(servedHot tableToServe)1)
         )
     )
 
@@ -206,20 +215,45 @@
             (not (at ?d onTray))
             (at ?d ?table)
             (decrease(toServeCold tableToServe)1)
-            (decrease(servedCold tableToServe)1)
+            (increase(servedCold tableToServe)1)
         )
     )
 
     (:action releaseTray
-        :parameters (?w -robot ?table - location)
+        :parameters (?w -robot ?table - location ?tray)
         :precondition (and
             (waiter ?w)
             (at ?w bar)
+            (tray ?tray)
             (=(numPlaceOnTray)maxNumPlaceTray)
             (not (free ?w))
         )
         :effect (and
             (free ?w)
+            (free ?tray)
+            (at ?tray bar)
+        )
+    )
+
+    (:action manageService
+        :parameters ()
+        :precondition (and 
+            (<=(tableToServe)4)
+            (=(+(servedHot tableToServe)(servedCold tableToServe))drinks-for-table tableToServe)
+        )
+        :effect (and 
+            (assign(tableToServe)tableMaking)
+        )
+    )
+
+    (:action manageMaking
+        :parameters ()
+        :precondition (and 
+            (<=(tableMaking)4)
+            (=(+(toMakeHot tableMaking)(servedCold tableMaking))0)
+        )
+        :effect (and 
+            (increase(tableMaking)1)
         )
     )
 

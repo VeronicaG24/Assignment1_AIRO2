@@ -17,7 +17,7 @@
         (maxNumPlaceTray - number) ;maximum number of drinks in a tray
         (bar table1 table2 table3 table4 - location);location tables+bar
         (tableToServe 1 4 - number) ;number of the table to serve
-        (grabber tray - location)
+        (onGrabber onTray - location)
     )
 
     (:init
@@ -31,10 +31,12 @@
     (:predicates ;todo: define predicates here
         (waiter ?w -robot)
         (barista ?b -robot)
+        (tray ?t)
         ;(table ?loc-location) ;this stands for the 4 table 
         ;(grabber ?loc -location) ; we use it for single drink
         (at ?d ?loc) ;stands for barista, waiter or drink at location
         ;(tray ?loc -location)   ; tray is a location
+        (drink-for-table ?d ?table) ;drink for table
         (free ?d) ;we use it for waiter, barista and tables
         (dirtyTable ?loc-location) ;dirty table
         
@@ -69,7 +71,7 @@
         )
         :effect (and
             (not (at ?d bar))
-            (at ?d grabber)
+            (at ?d onGrabber)
             (assign(waiterSpeed ?w)2)
             (not(free ?w))
             (decrease(toServeHot tableToServe)1)
@@ -87,7 +89,7 @@
         )
         :effect (and
             (not (at ?d bar))
-            (at ?d grabber)
+            (at ?d onGrabber)
             (assign(waiterSpeed ?w)2)
             (not(free ?w))
             (decrease(toServeCold tableToServe)1)
@@ -105,7 +107,7 @@
             (>(+(toServeHot tableToServe)(toServeCold tableToServe)))1)
         :effect (and
             (decrease(toServeHot tableToServe)1)
-            (at ?d tray)
+            (at ?d onTray)
             (decrease (numPlaceOnTray) 1)
         )  
     )
@@ -121,7 +123,7 @@
             (>(+(toServeHot tableToServe)(toServeCold tableToServe)))1)
         :effect (and
             (decrease(toServeCold tableToServe)1)
-            (at ?d tray)
+            (at ?d onTray)
             (decrease (numPlaceOnTray) 1)
         ) 
     )
@@ -146,13 +148,12 @@
             (waiter ?w)
             (at ?w ?table)
             (=(table-has-number ?table)tableToServe)
-            (at ?d grabber)
+            (at ?d onGrabber)
             (not (free ?w))
         )
         :effect (and
-            (not (at ?d grabber))
+            (not (at ?d onGrabber))
             (at ?d ?table)
-            (assign(waiterSpeed ?w)2)
             (decrease(toServeHot tableToServe)1)
             (decrease(servedHot tableToServe)1)
         )
@@ -164,13 +165,12 @@
             (waiter ?w)
             (at ?w ?table)
             (=(table-has-number ?table)tableToServe)
-            (at ?d grabber)
+            (at ?d onGrabber)
             (not (free ?w))
         )
         :effect (and
-            (not (at ?d grabber))
+            (not (at ?d onGrabber))
             (at ?d ?table)
-            (assign(waiterSpeed ?w)2)
             (decrease(toServeCold tableToServe)1)
             (decrease(servedCold tableToServe)1)
         )
@@ -182,13 +182,12 @@
             (waiter ?w)
             (at ?w ?table)
             (=(table-has-number ?table)tableToServe)
-            (at ?d tray)
+            (at ?d onTray)
             (not (free ?w))
         )
         :effect (and
-            (not (at ?d tray))
+            (not (at ?d onTray))
             (at ?d ?table)
-            (assign(waiterSpeed ?w)2)
             (decrease(toServeHot tableToServe)1)
             (decrease(servedHot tableToServe)1)
         )
@@ -200,17 +199,28 @@
             (waiter ?w)
             (at ?w ?table)
             (=(table-has-number ?table)tableToServe)
-            (at ?d tray)
+            (at ?d onTray)
             (not (free ?w))
         )
         :effect (and
-            (not (at ?d tray))
+            (not (at ?d onTray))
             (at ?d ?table)
-            (assign(waiterSpeed ?w)2)
             (decrease(toServeCold tableToServe)1)
             (decrease(servedCold tableToServe)1)
         )
     )
 
-    
+    (:action releaseTray
+        :parameters (?w -robot ?table - location)
+        :precondition (and
+            (waiter ?w)
+            (at ?w bar)
+            (=(numPlaceOnTray)maxNumPlaceTray)
+            (not (free ?w))
+        )
+        :effect (and
+            (free ?w)
+        )
+    )
+
 )

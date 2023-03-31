@@ -41,7 +41,7 @@
         (drinks-for-table ?table - location) ;total num of drink for table
         (free ?d) ;we use it for waiter, barista and tables
         (dirtyTable ?loc-location) ;dirty table
-        
+        (cleaning ?w-robot)
     )
 
 
@@ -254,6 +254,76 @@
         )
         :effect (and 
             (increase(tableMaking)1)
+        )
+    )
+
+    (:durative-action move
+        :parameters (?t1 ?t2 - location ?w -robot)
+        :duration (= ?duration (/(connection ?t1 ?t2)(waiterSpeed ?w)))
+        :condition (and (waiter ?w)
+            (at start (and (at ?w ?t1) (not (free ?t2) (not (cleaning ?w)))
+            ))
+        )
+        :effect (and 
+            (at end (and (not (at ?w ?t1)) (at ?w ?t2)
+            ))
+        )
+    )
+    
+    (:durative-action prepareCold
+        :parameters (?b -robot ?d - drinkCold ?table - location)
+        :duration (= ?duration 3)
+        :condition (and (barista ?b)
+            (at start (and (not (at ?d ?table)) (>(toMakeCold tableToServe)0)
+            ))
+            (over all (and 
+            ))
+            (at end (and 
+            ))
+        )
+        :effect (and 
+            (at start (and (not (free ?b))
+            ))
+            (at end (and (at ?d ?table) (decrease(toMakeCold tableToServe)1) (increase(toServeCold tabletoserve)1) (free ?b)
+            ))
+        )
+    )
+
+    (:durative-action prepareHot
+        :parameters (?b ?w -robot ?d - drinkHot ?table - location)
+        :duration (= ?duration 5)
+        :condition (and (waiter ?w) (barista ?b)
+            (at start (and (not (at ?d ?table)) (>(toMakeHot tableToServe)0) (free ?w)
+            ))
+            (over all (and
+            ))
+            (at end (and (free ?w)
+            ))
+        )
+        :effect (and 
+            (at start (and (not (free ?b))
+            ))
+            (at end (and (at ?d ?table) (decrease(toMakeHot tableToServe)1) (increase(toServeHot tabletoserve)1) (free ?b)
+            ))
+        )
+    )
+    
+    (:durative-action cleanTable
+        :parameters (?t - location ?w -robot)
+        :duration (= ?duration (*(surfaceTable ?t)2))
+        :condition (and (waiter ?w)
+            (at start (and (dirtyTable ?t) (at ?w ?t) (not (free ?t)) (free ?w)
+            ))
+            (over all (and 
+            ))
+            (at end (and 
+            ))
+        )
+        :effect (and 
+            (at start (and (cleaning ?w)
+            ))
+            (at end (and (not (dirtyTable ?t)) (not (cleaning ?w))
+            ))
         )
     )
 

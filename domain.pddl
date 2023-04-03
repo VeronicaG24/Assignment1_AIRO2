@@ -313,18 +313,18 @@
         :parameters (?t - location ?w -robot)
         :duration (= ?duration (*(surfaceTable ?t)2))
         :condition (and (waiter ?w)
-            (at start (and (dirtyTable ?t) (at ?w ?t) (not (free ?t)) (free ?w)
-            ))
-            (over all (and 
-            ))
-            (at end (and 
-            ))
+            (at start 
+                (and (dirtyTable ?t) (at ?w ?t) (not (free ?t)) (free ?w) (not (cleaning ?w))
+                (=(+(servedHot tableToServe)(servedCold tableToServe))drinks-for-table tableToServe))
+            )
         )
         :effect (and 
-            (at start (and (cleaning ?w)
-            ))
-            (at end (and (not (dirtyTable ?t)) (not (cleaning ?w))
-            ))
+            (at start 
+                (and (cleaning ?w))
+            )
+            (at end 
+                (and (not (dirtyTable ?t)) (not (cleaning ?w)) (free ?t))
+            )
         )
     )
 )

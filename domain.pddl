@@ -1,5 +1,3 @@
-;Header and description
-
 (define (domain domain_robot)
 
     ;remove requirements that are not needed
@@ -19,51 +17,6 @@
         (tableToServe 1 4 - number) ;number of the table to serve
         (tableMaking 1 4 - number) ;number of the table that the barista is making the drinks
         (onGrabber onTray - location)
-    )
-
-    (:init
-        (=(maxNumPlaceTray) 3)
-        
-        (=(table-has-number bar) 0)
-        (=(table-has-number table1) 1)
-        (=(table-has-number table2) 2)
-        (=(table-has-umber table3) 3)
-        (=(table-has-number table4) 4)
-        
-        (=(tableMaking) 1)
-
-        (=(connection bar tabl1)2)
-        (=(connection bar tabl2)2)
-        (=(connection bar tabl3)4)
-        (=(connection bar tabl4)4)
-
-        (=(connection table1 bar)2)
-        (=(connection table2 bar)2)
-        (=(connection table3 bar)2)
-        (=(connection table4 bar)2)
-
-        (=(connection table1 table2)1)
-        (=(connection table1 table3)1)
-        (=(connection table1 table4)1)
-
-        (=(connection table2 table1)1)
-        (=(connection table2 table3)1)
-        (=(connection table2 table4)1)
-
-        (=(connection table3 table1)1)
-        (=(connection table3 table2)1)
-        (=(connection table3 table4)1)
-
-        (=(connection table4 table1)1)
-        (=(connection table4 table2)1)
-        (=(connection table4 table3)1)
-        
-        (=(surfaceTable bar)1)
-        (=(surfaceTable table1)1)
-        (=(surfaceTable table2)1)
-        (=(surfaceTable table3)2)
-        (=(surfaceTable table4)1)
-        
     )
 
     (:predicates ;todo: define predicates here

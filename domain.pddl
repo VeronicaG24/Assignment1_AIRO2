@@ -241,6 +241,7 @@
         :precondition (and 
             (<=(tableToServe)4)
             (=(+(servedHot tableToServe)(servedCold tableToServe))drinks-for-table tableToServe)
+            (free tableToServe)
         )
         :effect (and 
             (assign(tableToServe)tableMaking)
@@ -314,8 +315,7 @@
         :duration (= ?duration (*(surfaceTable ?t)2))
         :condition (and (waiter ?w)
             (at start 
-                (and (dirtyTable ?t) (at ?w ?t) (not (free ?t)) (free ?w) (not (cleaning ?w))
-                (=(+(servedHot tableToServe)(servedCold tableToServe))drinks-for-table tableToServe))
+                (and (dirtyTable ?t) (at ?w ?t) (not (free ?t)) (free ?w) (not (cleaning ?w)))
             )
         )
         :effect (and 
@@ -324,6 +324,23 @@
             )
             (at end 
                 (and (not (dirtyTable ?t)) (not (cleaning ?w)) (free ?t))
+            )
+        )
+    )
+
+    (:durative-action consumeDrinks
+        :parameters (?t - location)
+        :duration (= ?duration 4) ; TO FIX
+        :condition (and
+            (at start 
+                (and (not (free ?t)) (not (cleaning ?w))
+                (=(table-has-number ?t)tableToServe)
+                (=(+(servedHot tableToServe)(servedCold tableToServe))drinks-for-table tableToServe))
+            )
+        )
+        :effect (and 
+            (at end 
+                (and (dirtyTable ?t))
             )
         )
     )

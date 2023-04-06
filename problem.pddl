@@ -6,24 +6,11 @@
         waiter barista - robot
         tr
         d1 d2 - drinkCold
-
     )
 
-    (:init 
-        (=(maxNumPlaceTray) 3)
-        
-        (=(table-has-number bar) 0)
-        (=(table-has-number table1) 1)
-        (=(table-has-number table2) 2)
-        (=(table-has-umber table3) 3)
-        (=(table-has-number table4) 4)
-        
-        (=(tableMaking) 1)
-
-        (=(connection bar tabl1)2)
-        (=(connection bar tabl2)2)
-        (=(connection bar tabl3)4)
-        (=(connection bar tabl4)4)
+    (:init
+        (tableToServe table2) 
+        (tableMaking table2)
 
         (=(connection table1 bar)2)
         (=(connection table2 bar)2)

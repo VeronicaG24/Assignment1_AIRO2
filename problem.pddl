@@ -4,7 +4,7 @@
     
     (:objects
         waiter barista - robot
-        tr
+        tr - object
         d1 d2 - drinkCold
     )
 
@@ -40,12 +40,9 @@
         (=(surfaceTable table4)1)
         
         (tray tr) (free waiter) (free barista) (free tr)
-
-        (at tray bar)
-        (at barista bar)
-        (at waiter bar)
-
-        (=(drink-for-table table2)2)
+        (atTray bar tr)
+        (atRobot bar barista)
+        (atRobot bar waiter)
         (=(toMakeCold table2)2)
 
         (dirtyTable table3) (dirtyTable table4)
@@ -54,7 +51,7 @@
 
     (:goal 
         (and 
-            (free t3) (free t4)(free t2)
+            (free table3) (free table4)(free table2)
         )
     )
 )

@@ -3,9 +3,9 @@
     (:domain domain_robot)
     
     (:objects
-        waiter barista - robot
-        tr - object
-        d1 d2 - drinkCold
+        waiter barista -robot
+        tr -object
+        d1 d2 -drinkCold
     )
 
     (:init
@@ -39,7 +39,10 @@
         (=(surfaceTable table3)2)
         (=(surfaceTable table4)1)
         
-        (tray tr) (free waiter) (free barista) (free tr)
+        (tray tr) 
+        (free waiter) 
+        (free barista) 
+        (free tr)
         (atTray bar tr)
         (atRobot bar barista)
         (atRobot bar waiter)

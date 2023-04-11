@@ -14,17 +14,18 @@
 
         (=(connection table1 bar)2)
         (=(connection table2 bar)2)
-        (=(connection table3 bar)2)
-        (=(connection table4 bar)2)
-
+        (=(connection table3 bar)3)
+        (=(connection table4 bar)3)
         (=(connection table1 table2)1)
         (=(connection table1 table3)1)
         (=(connection table1 table4)1)
-
+        (=(connection bar table1)2)
+        (=(connection bar table2)2)
+        (=(connection bar table3)3)
+        (=(connection bar table4)3)
         (=(connection table2 table1)1)
         (=(connection table2 table3)1)
         (=(connection table2 table4)1)
-
         (=(connection table3 table1)1)
         (=(connection table3 table2)1)
         (=(connection table3 table4)1)
@@ -38,15 +39,19 @@
         (=(surfaceTable table2)1)
         (=(surfaceTable table3)2)
         (=(surfaceTable table4)1)
-        
+        (=(numPlaceOnTray )3)
+        (=(waiterSpeed waiter)2)
         (tray tr) 
-        (free waiter) 
+        (free waiter)
+        (waiter waiter)
+        (barista barista)
         (free barista) 
         (free tr)
         (atTray bar tr)
         (atRobot bar barista)
         (atRobot bar waiter)
         (=(toMakeCold table2)2)
+        (=(numdrink table2)2)
 
         (dirtyTable table3) (dirtyTable table4)
 
@@ -54,7 +59,7 @@
 
     (:goal 
         (and 
-            (free table3) (free table4)(free table2)
+           (=(+(toServeHot table2)(toServeCold table2))2)
         )
     )
 )

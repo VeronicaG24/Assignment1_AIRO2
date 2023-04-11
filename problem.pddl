@@ -9,8 +9,6 @@
     )
 
     (:init
-        (tableToServe table2) 
-        (tableMaking table2)
 
         (=(connection table1 bar)2)
         (=(connection table2 bar)2)
@@ -51,6 +49,7 @@
         (atRobot bar barista)
         (atRobot bar waiter)
         (=(toMakeCold table2)2)
+        (=(toServeCold table2)0)
         (=(numdrink table2)2)
 
         (dirtyTable table3) (dirtyTable table4)
@@ -59,7 +58,7 @@
 
     (:goal 
         (and 
-           (=(+(toServeHot table2)(toServeCold table2))2)
+             (atDrinkcold bar d1) (atDrinkcold bar d2) 
         )
     )
 )

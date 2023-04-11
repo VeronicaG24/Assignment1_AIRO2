@@ -109,9 +109,10 @@
             (>=(numPlaceOnTray)1)
             (atRobot bar ?w)
             (free ?w)
+            (free ?tray)
             (tray ?tray)
             (atTray bar ?tray)
-            (>(+(toServeHot ?table)(toServeCold ?table))1)
+            (>=(+(toServeHot ?table)(toServeCold ?table))1)
         )
         :effect (and
             (decrease(toServeHot ?table)1)
@@ -126,11 +127,12 @@
             (waiter ?w)
             (atDrinkcold bar ?d)
             (>=(numPlaceOnTray)1)
-            (atDrinkcold bar ?d)
+            (atRobot bar ?w)
             (free ?w)
+            (free ?tray)
             (tray ?tray)
             (atTray bar ?tray)
-            (>(+(toServeHot ?table)(toServeCold ?table))1)
+            (>=(+(toServeHot ?table)(toServeCold ?table))1)
         )
         :effect (and
             (decrease(toServeCold ?table)1)
@@ -240,7 +242,6 @@
         :precondition (and 
             (waiter ?w)
             (not(tableToServe ?table))
-            (free ?table)
             (free ?w)
             (not(tableServed ?table))
             (tableServing ?table)
@@ -268,16 +269,15 @@
 
 
     (:action startMaking
-        :parameters (?table - location ?b - robot)
+        :parameters (?table -location ?b -robot)
         :precondition (and 
             (barista ?b)
             (not(tableMaking?table))
             (free ?b)
             (not(tableMaked ?table))
         )
-        :effect  (and
+        :effect (and
             (tableMaking ?table)
-            (not(free ?b))
             (tableServing ?table)
         )
     )
@@ -308,9 +308,10 @@
     )
     
     (:durative-action prepareCold
-        :parameters (?b -robot ?d - drinkCold ?table - location)
+        :parameters (?b  ?w -robot ?d - drinkCold ?table - location)
         :duration (= ?duration 3)
         :condition (and 
+            (over all(waiter ?w))
             (over all(barista ?b))
             (at start (and (>(toMakeCold ?table)0) (free ?b)))
         )

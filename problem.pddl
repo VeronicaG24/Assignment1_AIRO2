@@ -48,6 +48,7 @@
         (atTray bar tr)
         (atRobot bar barista)
         (atRobot bar waiter)
+
         (=(toMakeCold table2)2)
         (=(toServeCold table2)0)
         (=(numdrink table2)2)
@@ -58,7 +59,7 @@
 
     (:goal 
         (and 
-             (atDrinkcold bar d1) (atDrinkcold bar d2) 
+            (atDrinkcold bar d1) (atDrinkcold bar d2)
         )
     )
 )

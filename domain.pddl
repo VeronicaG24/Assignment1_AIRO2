@@ -72,19 +72,6 @@
         )
     )
     
-    (:action loadBiscuit
-        :parameters (?w -waiter ?b -biscuit)
-        :precondition (and 
-            (isAt ?w bar)
-            (isOn onTray onGrabber)
-            (>(numPlaceOnTray)0)
-        )
-        :effect (and 
-            (isOn ?b onTray)
-            (decrease(numPlaceOnTray)1)
-        )
-    )
-    
     
     (:action pickTray
         :parameters (?w -waiter)
@@ -141,19 +128,6 @@
         )
     )
 
-    (:action grabBiscuit
-        :parameters (?w -waiter ?b -biscuit)
-        :precondition (and
-            (isAt ?w bar)
-            (free ?w)
-        )
-        :effect (and 
-            (not(free ?w))
-            (isOn ?b onGrabber)
-        )
-    )
-    
-
     (:action serveColdTray
         :parameters (?w -waiter ?d -drinkCold ?t -location ?b -biscuit)
         :precondition (and 
@@ -181,20 +155,6 @@
             (not(toServeHot ?d ?t))
             (increase(numPlaceOnTray)1)
             (toServeBiscuit ?b ?t)
-        )
-    )
-
-    (:action serveBiscuitTray
-        :parameters (?w -waiter ?b -biscuit ?t -location)
-        :precondition (and 
-            (isAt ?w ?t)
-            (isOn ?b onTray)
-            (toServeBiscuit ?b ?t)
-        )
-        :effect (and 
-            (not(isOn ?b onTray))
-            (increase(numPlaceOnTray)1)
-            (not(toServeBiscuit ?b ?t))
         )
     )
     
@@ -226,20 +186,6 @@
             (not(isOnHot ?d onGrabber))
             (not(toServeHot ?d ?t))
             (toServeBiscuit ?b ?t)
-        )
-    )
-
-    (:action serveBiscuit
-        :parameters (?w -waiter ?b -biscuit ?t -location)
-        :precondition (and 
-            (isAt ?w ?t)
-            (isOn ?b onGrabber)
-            (toServeBiscuit ?b ?t)
-        )
-        :effect (and 
-            (free ?w)
-            (not(isOn ?b onGrabber))
-            (not(toServeBiscuit ?b ?t))
         )
     )
 

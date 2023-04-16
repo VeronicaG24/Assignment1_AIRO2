@@ -170,6 +170,7 @@
         )
         :effect (and 
             (not(isOnCold ?d onTray))
+            (isOn onTray onGrabber)
             (not(toServeCold ?d ?t))
             (increase(numPlaceOnTray)1)
             (increase(numBiscuit ?t)1)
@@ -186,6 +187,7 @@
         )
         :effect (and 
             (not(isOnHot ?d onTray))
+            (isOn onTray onGrabber)
             (not(toServeHot ?d ?t))
             (increase(numPlaceOnTray)1)
             (increase(numBiscuit ?t)1)
@@ -197,6 +199,7 @@
         :parameters (?w -waiter ?t -location)
         :precondition (and 
             (isAt ?w ?t)
+            (isOn onTray onGrabber)
             (toServeBiscuit ?t)
             (>(numBiscuit ?t)0)
         )

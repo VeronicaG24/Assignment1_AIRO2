@@ -2,9 +2,8 @@
 (:objects 
     b -barista
     w -waiter
-    d1 d2 -drinkCold
-    d3 -drinkHot
-    b1 b2 b3 -biscuit
+    d1 - drinkCold
+    d2 - drinkHot
 )
 
 (:init
@@ -33,18 +32,43 @@
 
     (=(numPlaceOnTray)3)
 
+    (=(numDrink table1)1)
+    (=(numDrink table2)0)
+    (=(numDrink table3)0)
+    (=(numDrink table4)0)
+
+    (=(numDrinkServed table1)0)
+    (=(numDrinkServed table2)0)
+    (=(numDrinkServed table3)0)
+    (=(numDrinkServed table4)0)
+
+    (=(numBiscuit table1)0)
+    (=(numBiscuit table2)0)
+    (=(numBiscuit table3)0)
+    (=(numBiscuit table4)0)
+
+    (toServe table1)
+
     (isAt w bar)
 
     (free b)
     (free w)
 
+    (free table2)
+    (free table3)
+    (free table4)
+
+    (isTable table1)
+    (isTable table2)
+    (isTable table3)
+    (isTable table4)
+
     (toPrepareCold d1 table1)
-    (toprepareCold d2 table3)
-    (toPrepareHot d3 table4)
 )
 
 (:goal (and
-    
+    (debug)
 ))
 
 )
+

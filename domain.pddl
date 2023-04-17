@@ -32,6 +32,7 @@
         (toServeHot ?d -drinkHot ?t -location) ;same as above, but for hot drinks
         (free ?b -object) ;used for waiter(s) and barista or for tables cleaned
         (toServeBiscuit ?t -location) ;biscuit is held by a waiter and must be served at table t
+        (biscuitGrabbed) ;to avoid bug where robot pick tray, load biscuit on it, drops it and then proceeds to serve it as if the biscuit would be onGrabber
         (debug) ;put this in some effect to see if it triggers, to use only for debugging
         (isTable ?t -location)
         (toServe ?t -location)
@@ -153,6 +154,7 @@
             (isAt ?w bar)
             (free ?w)
             (>(numBiscuit ?t)0)
+            (biscuitGrabbed)
         )
         :effect (and 
             (not(free ?w))
@@ -166,6 +168,7 @@
         :precondition (and 
             (isAt ?w ?t)
             (isOnCold ?d onTray)
+            (isOn onTray onGrabber)
             (toServeCold ?d ?t)
         )
         :effect (and 
@@ -183,6 +186,7 @@
         :precondition (and 
             (isAt ?w ?t)
             (isOnHot ?d onTray)
+            (isOn onTray onGrabber)
             (toServeHot ?d ?t)
         )
         :effect (and 
@@ -249,9 +253,12 @@
             (isAt ?w ?t)
             (toServeBiscuit ?t)
             (>(numBiscuit ?t)0)
+            (not (isOn onTray Ongrabber))
+            (biscuitGrabbed)
         )
         :effect (and 
             (free ?w)
+            (not(biscuitGrabbed))
             (not(toServeBiscuit ?t))
             (decrease(numBiscuit ?t)1)
         )
@@ -266,13 +273,13 @@
             (<(numBiscuit ?t)1)
         )
         :effect (and 
-            (debug)
+            (isDirty ?t)
         )
     )
     
 
     (:durative-action move
-        :parameters (?w -waiter ?t1 -location ?t2 -location ?d -drinkCold)
+        :parameters (?w -waiter ?t1 -location ?t2 -location)
         :duration (= ?duration (/(connection ?t1 ?t2)(waiterSpeed ?w)))
         :condition (and 
             (at start 
@@ -363,6 +370,9 @@
             (at start (and 
                 (isDirty ?t)
             ))
+            (at start (and
+                (free ?w)
+            ))
         )
         :effect (and 
             (at start (and 
@@ -373,6 +383,9 @@
             ))
             (at end (and 
                 (not(cleaning ?w))
+            ))
+            (at end (and 
+                (free ?t)
             ))
         )
     )

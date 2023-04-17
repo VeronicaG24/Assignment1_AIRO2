@@ -1,9 +1,8 @@
-(define (problem p) (:domain bar)
+(define (problem p1) (:domain bar)
 (:objects 
     b -barista
     w -waiter
-    d1 - drinkCold
-    d2 - drinkHot
+    d1 d2 - drinkCold
 )
 
 (:init
@@ -32,8 +31,8 @@
 
     (=(numPlaceOnTray)3)
 
-    (=(numDrink table1)1)
-    (=(numDrink table2)0)
+    (=(numDrink table1)0)
+    (=(numDrink table2)2)
     (=(numDrink table3)0)
     (=(numDrink table4)0)
 
@@ -47,28 +46,31 @@
     (=(numBiscuit table3)0)
     (=(numBiscuit table4)0)
 
-    (toServe table1)
+    (toServe table2)
 
     (isAt w bar)
 
     (free b)
     (free w)
 
-    (free table2)
-    (free table3)
-    (free table4)
+    (free table1)
+    
+    (isDirty table3)
+    (isDirty table4)
 
     (isTable table1)
     (isTable table2)
     (isTable table3)
     (isTable table4)
 
-    (toPrepareCold d1 table1)
+    (toPrepareCold d1 table2)
+    (toPrepareCold d2 table2)
 )
 
 (:goal (and
-    (debug)
+    (free table2)
+    (free table3)
+    (free table4)
 ))
 
 )
-

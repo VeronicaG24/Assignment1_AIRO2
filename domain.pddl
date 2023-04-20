@@ -303,10 +303,20 @@
         )
         :effect (and 
             (not(consumedCold ?d ?t))
-            (decrease(numDrinkToConsume ?t)1)
+            (assign(numDrinkToConsume ?t)(-(numDrinkToConsume ?t)1))
         )
     )
-    
+
+    (:action finishConsumationHot
+        :parameters (?d - drinkHot ?t -location)
+        :precondition (and 
+            (consumedHot ?d ?t)
+        )
+        :effect (and 
+            (not(consumedHot ?d ?t))
+            (assign(numDrinkToConsume ?t)(-(numDrinkToConsume ?t)1))
+        )
+    )
 
     (:action customerLeave
         :parameters (?t -location)
@@ -314,25 +324,13 @@
             (toServe ?t)
             (>=(-(numDrinkServed ?t)(numDrink ?t))0)
             (<(-(numDrinkServed ?t)(numDrink ?t))1)
-            ;(<(numDrinkToConsume ?t)1)
+            (<(numDrinkToConsume ?t)1)
             (<(numBiscuit ?t)1)
         )
         :effect (and 
             (isDirty ?t)
         )
     )
-
-    ; IGNORE THIS ACTION FOR NOW
-    (:action stop
-        :parameters (?t -location)
-        :precondition (and 
-            (<(numDrinkToConsume ?t)1)
-        )
-        :effect (and 
-            (isDirty ?t)
-        )
-    )
-    
 
     (:action assignTable
         :parameters (?w -waiter ?t -location)
@@ -346,7 +344,6 @@
         )
     )
 
-    ; IGNORE THIS ACTION FOR NOW
     (:durative-action consumeDrinkCold
         :parameters (?d -drinkCold ?t -location)
         :duration (= ?duration 4)
@@ -365,7 +362,6 @@
         )
     )
     
-    ;IGNORE THIS ACTION FOR NOW
     (:durative-action consumeDrinkHot
         :parameters (?d -drinkHot ?t -location)
         :duration (= ?duration 4)

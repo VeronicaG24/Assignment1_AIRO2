@@ -2,7 +2,8 @@
 (:objects 
     b -barista
     w1 w2 -waiter
-    d1 d2 - drinkCold
+    d1 d2 d3 d4 - drinkCold
+    d5 d6 d7 d8 - drinkHot
     grab1 grab2 -location
 )
 
@@ -33,10 +34,10 @@
 
     (=(numPlaceOnTray)3)
 
-    (=(numDrink table1)0)
-    (=(numDrink table2)2)
-    (=(numDrink table3)0)
-    (=(numDrink table4)0)
+    (=(numDrink table1)2)
+    (=(numDrink table2)0)
+    (=(numDrink table3)4)
+    (=(numDrink table4)2)
 
     (=(numDrinkServed table1)0)
     (=(numDrinkServed table2)0)
@@ -47,39 +48,46 @@
     (=(numBiscuit table2)0)
     (=(numBiscuit table3)0)
     (=(numBiscuit table4)0)
-    (=(numDrinkToConsume table2)2)
 
     (belongs grab1 w1)
     (belongs grab2 w2)
 
-    (toServe table2)
+    (toServe table1)
+    (toServe table3)
+    (toServe table4)
 
     (isAt w1 bar)
-    (isAt w2 table1)
+    (isAt w2 table2)
 
     (occupied bar)
-    (occupied table1)
+    (occupied table2)
 
     (free b)
     (free w1)
     (free w2)
-
-    (free table1)
     
-    (isDirty table3)
-    (isDirty table4)
+    (isDirty table2)
 
     (isTable table1)
     (isTable table2)
     (isTable table3)
     (isTable table4)
 
-    (toPrepareCold d1 table2)
-    (toPrepareCold d2 table2)
+    (toPrepareCold d1 table1)
+    (toPrepareCold d2 table1)
+    (toPrepareCold d3 table4)
+    (toPrepareCold d4 table4)
+    (toPrepareHot d5 table3)
+    (toPrepareHot d6 table3)
+    (toPrepareHot d7 table3)
+    (toPrepareHot d8 table3)
 )
 
 (:goal (and
-    (free table2) (free table3) (free table4)
+    (free table1)
+    (free table2)
+    (free table3)
+    (free table4)
 ))
 
 )

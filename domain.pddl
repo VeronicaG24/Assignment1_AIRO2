@@ -38,14 +38,11 @@
         (assigned ?t -location) ;to prevent assignation to multiple waiters
         (belongs ?grab -location ?w -waiter)
         (debug) ;put this in some effect to see if it triggers, to use only for debugging
-        (isTable ?t -location)
         (toServe ?t -location)
         (consumeCold ?d -drinkCold ?t -location) ;used to trigger process of consuming a drink cold
         (consumeHot ?d -drinkHot ?t -location) ;used to trigger process of consuming a drink hot
         (consumedCold ?d -drinkCold ?t -location) ;used after a drink has been consumed
         (consumedHot ?d -drinkHot ?t -location) ;used after a drink has been consumed
-        (cooling_down ?d -drinkHot) ;used to trigger process of cooling down a drink hot
-        (cooled ?d -drinkHot) ;used after a drink has been cooled down
     )
 
 
@@ -57,7 +54,6 @@
         (numDrink ?t -location)
         (numDrinkServed ?t -location)
         (numDrinkToConsume ?t -location)
-        (numDrinkHot) 
     )
 
     (:action loadCold
@@ -212,8 +208,6 @@
             (isOn onTray ?grab)
             (toServeHot ?d ?t)
             (serveTable ?w ?t)
-            (not(cooled ?d))
-            (cooling_down ?d)
         )
         :effect (and 
             (not(isOnHot ?d onTray))
@@ -223,7 +217,6 @@
             (increase(numBiscuit ?t)1)
             (increase(numDrinkServed ?t)1)
             (consumeHot ?d ?t)
-            (debug)
         )
     )
 
@@ -272,8 +265,6 @@
             (isOnHot ?d ?grab)
             (toServeHot ?d ?t)
             (serveTable ?w ?t)
-            (not(cooled ?d))
-            (cooling_down ?d)
         )
         :effect (and 
             (free ?w)
@@ -282,7 +273,6 @@
             (increase(numBiscuit ?t)1)
             (increase(numDrinkServed ?t)1)
             (consumeHot ?d ?t)
-            (debug)
         )
     )
 
@@ -378,7 +368,6 @@
             (at start (and 
                 (consumeHot ?d ?t)
             ))
-
         )
         :effect (and 
             (at end (and 
@@ -403,6 +392,7 @@
             (over all 
                 (not(occupied ?t2))
             )
+            
         )
         :effect (and 
             (at start
@@ -429,9 +419,6 @@
             ))
             (at start (and 
                 (toPrepareCold ?d ?t)
-            ))
-            (at start (and
-                (<(numDrinkHot)1)
             ))
         )
         :effect (and 
@@ -480,32 +467,8 @@
             (at end (and 
                 (isOnHot ?d bar)
             ))
-            (at end (and
-                (assign(numDrinkHot ?t)(-(numDrinkHot ?t)1)))
-            )
         )
     )
-
-    (:durative-action coolingDown
-        :parameters ( ?d -drinkHot)
-        :duration (= ?duration 4)
-        :condition (and 
-            (at start (and 
-                (isOnHot ?d bar)
-            ))
-        )
-        :effect (and 
-            (at end (and
-                (cooled ?d)
-            ))
-            (at start (and
-                (cooling_down ?d)
-            ))
-            
-        )
-    )
-    
-    
 
     (:durative-action cleanTable    
         :parameters (?t -location ?w -waiter)

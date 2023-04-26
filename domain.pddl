@@ -2,13 +2,11 @@
 
 (define (domain bar)
 
-;remove requirements that are not needed
     (:requirements 
         :strips 
         :fluents 
         :durative-actions 
-        :typing 
-        :conditional-effects 
+        :typing  
         :negative-preconditions  
         :equality 
     )
@@ -23,13 +21,13 @@
 
     (:constants 
         onTray -location ;where drinks are
-        bar table1 table2 table3 table4 -location ;location tables+bar
-        bartender -barista ;there's only one barista in every problem
+        bar table1 table2 table3 table4 -location ;location tables and bar
+        bartender -barista ;the only barista
     )
 
     (:predicates 
         (isAt ?w -waiter ?loc -location) ;used to identify location of waiter(s)
-        (isOnCold ?d -drinkCold ?loc -location) ;used to identify location of dcold drink (onGrabber/onTray)
+        (isOnCold ?d -drinkCold ?loc -location) ;used to identify location of cold drink
         (isOnHot ?d -drinkHot ?loc -location) ;same as above, but for hot drinks
         (isOn ?x -object ?l -location) ;used for the tray when is onGrabber
         (isDirty ?t -location) ;when the table is to clean
@@ -44,9 +42,8 @@
         (biscuitGrabbed ?grab -location) ;to avoid bug where robot pick tray, load biscuit on it, drops it and then proceeds to serve it as if the biscuit would be onGrabber
         (occupied ?t -location) ;used to alert other waiters that a place is occupied by another waiter
         (assigned ?t -location) ;to prevent assignation to multiple waiters
-        (belongs ?grab -location ?w -waiter)
-        (debug) ;put this in some effect to see if it triggers, to use only for debugging
-        (toServe ?t -location)
+        (belongs ?grab -location ?w -waiter) ;for differenciate grabbers of two waiters
+        (toServe ?t -location) ;table that has to be served
         (consumeCold ?d -drinkCold ?t -location) ;used to trigger process of consuming a drink cold
         (consumeHot ?d -drinkHot ?t -location) ;used to trigger process of consuming a drink hot
         (consumedCold ?d -drinkCold ?t -location) ;used after a drink has been consumed
@@ -55,15 +52,16 @@
 
 
     (:functions
-        (waiterSpeed ?w -waiter)
-        (connection ?t1 -location ?t2 -location)
-        (numPlaceOnTray)
-        (numBiscuit ?t -location)
-        (numDrink ?t -location)
-        (numDrinkServed ?t -location)
-        (numDrinkToConsume ?t -location)
+        (waiterSpeed ?w -waiter) ;speed of waiter(s)
+        (connection ?t1 -location ?t2 -location) ;distance between tables and bar
+        (numPlaceOnTray) ;free space on tray
+        (numBiscuit ?t -location) ;number of biscuits
+        (numDrink ?t -location) ;total number of drinks
+        (numDrinkServed ?t -location) ;number of drinks served
+        (numDrinkToConsume ?t -location) ;number of drinks to consume
     )
 
+    ;action for load the tray with cold drinks
     (:action loadCold
         :parameters (?d -drinkCold ?w -waiter ?grab -location)
         :precondition (and 
@@ -71,15 +69,16 @@
             (isOnCold ?d bar)
             (belongs ?grab ?w)
             (isOn onTray ?grab)
-            (>(numPlaceOnTray)0)
+            (> (numPlaceOnTray) 0)
         )
         :effect (and 
-            (not(isOnCold ?d bar))
+            (not (isOnCold ?d bar))
             (isOnCold ?d onTray)
-            (decrease(numPlaceOnTray)1)
+            (decrease (numPlaceOnTray) 1)
         )
     )
     
+    ;same as above, but for hot drinks
     (:action loadHot
         :parameters (?d -drinkHot ?w -waiter ?grab -location)
         :precondition (and 
@@ -87,45 +86,48 @@
             (isOnHot ?d bar)
             (belongs ?grab ?w)
             (isOn onTray ?grab)
-            (>(numPlaceOnTray)0)
+            (> (numPlaceOnTray) 0)
         )
         :effect (and 
-            (not(isOnHot ?d bar))
+            (not (isOnHot ?d bar))
             (isOnHot ?d onTray)
-            (decrease(numPlaceOnTray)1)
+            (decrease (numPlaceOnTray) 1)
         )
     )
     
+    ;same above, but for biscuits
     (:action loadBiscuit
         :parameters (?w -waiter ?t -location ?grab -location)
         :precondition (and 
             (isAt ?w bar)
             (belongs ?grab ?w)
             (isOn onTray ?grab)
-            (>(numPlaceOnTray)0)
-            (>(numBiscuit ?t)0)
+            (> (numPlaceOnTray) 0)
+            (> (numBiscuit ?t) 0)
         )
         :effect (and 
-            (decrease(numPlaceOnTray)1)
+            (decrease (numPlaceOnTray) 1)
             (toServeBiscuit ?t)
         )
     )
     
+    ;action for pick the tray
     (:action pickTray
         :parameters (?w -waiter ?grab -location)
         :precondition (and 
             (isAt ?w bar)
             (belongs ?grab ?w)
-            (not(isOn onTray ?grab))
+            (not (isOn onTray ?grab))
             (free ?w)
         )
         :effect (and 
             (isOn onTray ?grab)
-            (not(free ?w))
-            (assign(waiterSpeed ?w)1)
+            (not (free ?w))
+            (assign (waiterSpeed ?w) 1)
         )
     )
     
+    ;action for release the tray
     (:action dropTray
         :parameters (?w -waiter ?grab -location)
         :precondition (and 
@@ -134,12 +136,13 @@
             (isOn onTray ?grab)
         )
         :effect (and 
-            (not(isOn onTray ?grab))
+            (not (isOn onTray ?grab))
             (free ?w)
-            (assign (waiterSpeed ?w)2)
+            (assign (waiterSpeed ?w) 2)
         )
     )
     
+    ;action for grab a cold drink
     (:action grabCold
         :parameters (?w -waiter ?d - drinkCold ?grab -location)
         :precondition (and 
@@ -149,12 +152,13 @@
             (free ?w)
         )
         :effect (and 
-            (not(isOnCold ?d bar))
-            (not(free ?w))
+            (not (isOnCold ?d bar))
+            (not (free ?w))
             (isOnCold ?d ?grab)
         )
     )
 
+    ;same as above, but for hot drink
     (:action grabHot
         :parameters (?w -waiter ?d - drinkHot ?grab -location)
         :precondition (and 
@@ -164,28 +168,29 @@
             (free ?w)
         )
         :effect (and 
-            (not(isOnHot ?d bar))
-            (not(free ?w))
+            (not (isOnHot ?d bar))
+            (not (free ?w))
             (isOnHot ?d ?grab)
         )
     )
 
+    ;same as above, but for single biscuit
     (:action grabBiscuit
         :parameters (?w -waiter ?t -location ?grab -location)
         :precondition (and
             (isAt ?w bar)
             (free ?w)
             (belongs ?grab ?w)
-            (>(numBiscuit ?t)0)
+            (> (numBiscuit ?t) 0)
             (biscuitGrabbed ?grab)
         )
         :effect (and 
-            (not(free ?w))
+            (not (free ?w))
             (toServeBiscuit ?t)
         )
     )
     
-
+    ;actions for serve cold drinks on tray
     (:action serveColdTray
         :parameters (?w -waiter ?d -drinkCold ?t -location ?grab -location)
         :precondition (and 
@@ -197,16 +202,17 @@
             (serveTable ?w ?t)
         )
         :effect (and 
-            (not(isOnCold ?d onTray))
+            (not (isOnCold ?d onTray))
             (isOn onTray ?grab)
-            (not(toServeCold ?d ?t))
-            (increase(numPlaceOnTray)1)
-            (increase(numBiscuit ?t)1)
-            (increase(numDrinkServed ?t)1)
+            (not (toServeCold ?d ?t))
+            (increase (numPlaceOnTray) 1)
+            (increase (numBiscuit ?t) 1)
+            (increase (numDrinkServed ?t) 1)
             (consumeCold ?d ?t)
         )
     )
     
+    ;same as above, but for hot drinks
     (:action serveHotTray
         :parameters (?w -waiter ?d -drinkHot ?t -location ?grab -location)
         :precondition (and 
@@ -218,16 +224,17 @@
             (serveTable ?w ?t)
         )
         :effect (and 
-            (not(isOnHot ?d onTray))
+            (not (isOnHot ?d onTray))
             (isOn onTray ?grab)
-            (not(toServeHot ?d ?t))
-            (increase(numPlaceOnTray)1)
-            (increase(numBiscuit ?t)1)
-            (increase(numDrinkServed ?t)1)
+            (not (toServeHot ?d ?t))
+            (increase (numPlaceOnTray) 1)
+            (increase (numBiscuit ?t) 1)
+            (increase (numDrinkServed ?t) 1)
             (consumeHot ?d ?t)
         )
     )
 
+    ;same as above, but for biscuits
     (:action serveBiscuitTray
         :parameters (?w -waiter ?t -location ?grab -location)
         :precondition (and 
@@ -235,17 +242,17 @@
             (belongs ?grab ?w)
             (isOn onTray ?grab)
             (toServeBiscuit ?t)
-            (>(numBiscuit ?t)0)
+            (> (numBiscuit ?t) 0)
             (serveTable ?w ?t)
         )
         :effect (and 
-            (increase(numPlaceOnTray)1)
-            (not(toServeBiscuit ?t))
-            (decrease(numBiscuit ?t)1)
+            (increase (numPlaceOnTray) 1)
+            (not (toServeBiscuit ?t))
+            (decrease (numBiscuit ?t) 1)
         )
     )
     
-
+    ;actions for serve cold drinks on grabber
     (:action serveCold
         :parameters (?w -waiter ?d - drinkCold ?t - location ?grab -location)
         :precondition (and 
@@ -257,14 +264,15 @@
         )
         :effect (and 
             (free ?w)
-            (not(isOnCold ?d ?grab))
-            (not(toServeCold ?d ?t))
-            (increase(numBiscuit ?t)1)
-            (increase(numDrinkServed ?t)1)
+            (not (isOnCold ?d ?grab))
+            (not (toServeCold ?d ?t))
+            (increase (numBiscuit ?t) 1)
+            (increase (numDrinkServed ?t) 1)
             (consumeCold ?d ?t)
         )
     )
     
+    ;same as above, but for hot drinks
     (:action serveHot
         :parameters (?w -waiter ?d - drinkHot ?t - location ?grab -location)
         :precondition (and 
@@ -276,74 +284,76 @@
         )
         :effect (and 
             (free ?w)
-            (not(isOnHot ?d ?grab))
-            (not(toServeHot ?d ?t))
-            (increase(numBiscuit ?t)1)
-            (increase(numDrinkServed ?t)1)
+            (not (isOnHot ?d ?grab))
+            (not (toServeHot ?d ?t))
+            (increase (numBiscuit ?t) 1)
+            (increase (numDrinkServed ?t) 1)
             (consumeHot ?d ?t)
         )
     )
 
+    ;same as above, but for biscuits
     (:action serveBiscuit
         :parameters (?w -waiter ?t -location ?grab -location)
         :precondition (and 
             (isAt ?w ?t)
             (belongs ?grab ?w)
             (toServeBiscuit ?t)
-            (>(numBiscuit ?t)0)
+            (> (numBiscuit ?t) 0)
             (not (isOn onTray ?grab))
             (serveTable ?w ?t)
             (biscuitGrabbed ?grab)
         )
         :effect (and 
             (free ?w)
-            (not(biscuitGrabbed ?grab))
-            (not(toServeBiscuit ?t))
-            (decrease(numBiscuit ?t)1)
+            (not (biscuitGrabbed ?grab))
+            (not (toServeBiscuit ?t))
+            (decrease (numBiscuit ?t) 1)
         )
     )
     
+    ;action for finish consumation of cold drinks
     (:action finishConsumationCold
         :parameters (?d - drinkCold ?t -location)
-        :precondition (and 
+        :precondition  
             (consumedCold ?d ?t)
-        )
         :effect (and 
-            (not(consumedCold ?d ?t))
-            (assign(numDrinkToConsume ?t)(-(numDrinkToConsume ?t)1))
+            (not (consumedCold ?d ?t))
+            (assign (numDrinkToConsume ?t) (- (numDrinkToConsume ?t) 1))
         )
     )
 
+    ;same as above, but for hot drinks
     (:action finishConsumationHot
         :parameters (?d - drinkHot ?t -location)
-        :precondition (and 
+        :precondition 
             (consumedHot ?d ?t)
-        )
         :effect (and 
-            (not(consumedHot ?d ?t))
-            (assign(numDrinkToConsume ?t)(-(numDrinkToConsume ?t)1))
+            (not (consumedHot ?d ?t))
+            (assign (numDrinkToConsume ?t) (- (numDrinkToConsume ?t) 1))
         )
     )
 
+    ;action for leaving customers
     (:action customerLeave
         :parameters (?t -location)
         :precondition (and 
             (toServe ?t)
-            (>=(-(numDrinkServed ?t)(numDrink ?t))0)
-            (<(-(numDrinkServed ?t)(numDrink ?t))1)
-            (<(numDrinkToConsume ?t)1)
-            (<(numBiscuit ?t)1)
+            (>= (- (numDrinkServed ?t) (numDrink ?t)) 0)
+            (< (- (numDrinkServed ?t) (numDrink ?t))1)
+            (< (numDrinkToConsume ?t) 1)
+            (< (numBiscuit ?t) 1)
         )
-        :effect (and 
+        :effect 
             (isDirty ?t)
-        )
     )
 
+    ;action for assign waiter(s) to table
     (:action assignTable
         :parameters (?w -waiter ?t -location)
         :precondition (and 
             (not (serveTable ?w ?t))
-            (not(assigned ?t))
+            (not (assigned ?t))
         )
         :effect (and 
             (serveTable ?w ?t)
@@ -351,181 +361,98 @@
         )
     )
 
+    ;durative actions for consume drinks
     (:durative-action consumeDrinkCold
         :parameters (?d -drinkCold ?t -location)
         :duration (= ?duration 4)
-        :condition (and 
-            (at start (and 
-                (consumeCold ?d ?t)
-            ))
-        )
+        :condition 
+            (at start (consumeCold ?d ?t))
         :effect (and 
-            (at end (and 
-                (not(consumeCold ?d ?t))
-            ))
-            (at end (and
-                (consumedCold ?d ?t)
-            ))
+            (at end (not (consumeCold ?d ?t)))
+            (at end (consumedCold ?d ?t))
         )
     )
     
+    ;same as above, but for hot drinks
     (:durative-action consumeDrinkHot
         :parameters (?d -drinkHot ?t -location)
         :duration (= ?duration 4)
-        :condition (and 
-            (at start (and 
-                (consumeHot ?d ?t)
-            ))
-        )
+        :condition
+            (at start (consumeHot ?d ?t))
         :effect (and 
-            (at end (and 
-                (not(consumeHot ?d ?t))
-            ))
-            (at end (and
-                (consumedHot ?d ?t)
-            ))
+            (at end (not (consumeHot ?d ?t)))
+            (at end (consumedHot ?d ?t))
         )
     )
 
+    ;durative action for moving the waiter
     (:durative-action move
         :parameters (?w -waiter ?t1 -location ?t2 -location)
-        :duration (= ?duration (/(connection ?t1 ?t2)(waiterSpeed ?w)))
+        :duration (= ?duration (/ (connection ?t1 ?t2) (waiterSpeed ?w)))
         :condition (and 
-            (at start 
-                (isAt ?w ?t1)
-            )
-            (at start 
-                (not(cleaning ?w))
-            )
-            (over all 
-                (not(occupied ?t2))
-            )
+            (at start (isAt ?w ?t1))
+            (at start (not (cleaning ?w)))
+            (over all (not (occupied ?t2)))
             
         )
         :effect (and 
-            (at start
-                (not(isAt ?w ?t1))
-            )
-            (at start
-                (not(occupied ?t1))
-            )
-            (at end
-                (isAt ?w ?t2)
-            )
-            (at end 
-                (occupied ?t2)
-            )
+            (at start (not (isAt ?w ?t1)))
+            (at start (not (occupied ?t1)))
+            (at end (isAt ?w ?t2))
+            (at end (occupied ?t2))
         )
     )
 
+    ;durative action for preparing cold drinks
     (:durative-action prepareCold
         :parameters (?b -barista ?d -drinkCold ?t -location)
         :duration (= ?duration 3)
         :condition (and 
-            (at start (and 
-                (free ?b)
-            ))
-            (at start (and 
-                (toPrepareCold ?d ?t)
-            ))
+            (at start (free ?b))
+            (at start (toPrepareCold ?d ?t))
         )
         :effect (and 
-            (at start (and 
-                (not(free ?b))
-            ))
-            (at end (and 
-                (free ?b)
-            ))
-            (at end (and 
-                (not(toPrepareCold ?d ?t))
-            ))
-            (at end (and 
-                (toServeCold ?d ?t)
-            ))
-            (at end (and 
-                (isOnCold ?d bar)
-            ))
+            (at start (not (free ?b)))
+            (at end (free ?b))
+            (at end (not (toPrepareCold ?d ?t)))
+            (at end (toServeCold ?d ?t))
+            (at end (isOnCold ?d bar))
         )
     )
     
+    ;same as above, but for hot drinks
     (:durative-action prepareHot
         :parameters (?b -barista ?d -drinkHot ?t -location)
         :duration (= ?duration 5)
         :condition (and 
-            (at start (and 
-                (free ?b)
-            ))
-            (at start (and 
-                (toPrepareHot ?d ?t)
-            ))
+            (at start (free ?b))
+            (at start (toPrepareHot ?d ?t))
         )
         :effect (and 
-            (at start (and 
-                (not(free ?b))
-            ))
-            (at end (and 
-                (free ?b)
-            ))
-            (at end (and 
-                (not(toPrepareHot ?d ?t))
-            ))
-            (at end (and 
-                (toServeHot ?d ?t)
-            ))
-            (at end (and 
-                (isOnHot ?d bar)
-            ))
+            (at start (not(free ?b)))
+            (at end (free ?b))
+            (at end (not (toPrepareHot ?d ?t)))
+            (at end (toServeHot ?d ?t))
+            (at end (isOnHot ?d bar))
         )
     )
 
+    ;durative actions for cleaning tables
     (:durative-action cleanTable    
         :parameters (?t -location ?w -waiter)
         :duration (= ?duration 2)
         :condition (and 
-            (at start (and 
-                (isAt ?w ?t)
-            ))
-            (at start (and 
-                (isDirty ?t)
-            ))
-            (at start (and
-                (free ?w)
-            ))
-            (at start (and
-                (serveTable ?w ?t)
-            ))
+            (at start (isAt ?w ?t))
+            (at start (isDirty ?t))
+            (at start (free ?w))
+            (at start (serveTable ?w ?t))
         )
         :effect (and 
-            (at start (and 
-                (cleaning ?w)
-            ))
-            (at end (and 
-                (not(isDirty ?t))
-            ))
-            (at end (and 
-                (not(cleaning ?w))
-            ))
-            (at end (and 
-                (free ?t)
-            ))
+            (at start (cleaning ?w))
+            (at end (not (isDirty ?t)))
+            (at end (not (cleaning ?w)))
+            (at end (free ?t))
         )
     )
 )
 
-;---------------------------------------------------
-
-;RISOLTO PROBLEMA OnTray (usa isTable)
-
-;TODO: METTERE DURATA CORRETTA SU cleanTable
-;TODO: CAPIRE PERCHè I NUMERIC FUNZIONANO STRANI
-
-;         ^
-;         |
-;         |
-;Per ora da ignorare
-
-;---------------------------------------------------
-
-;Per il controllo della soluzione:
-; - Controllare che i due waiter servano solo i tavoli a cui vengono assegnati (All'inizio ci sarà (ASSIGN table w))
-; - Controllare che i due robot non si trovino mai nello stesso luogo

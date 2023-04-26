@@ -3,7 +3,15 @@
 (define (domain bar)
 
 ;remove requirements that are not needed
-    (:requirements :strips :fluents :durative-actions :timed-initial-literals :typing :conditional-effects :negative-preconditions :duration-inequalities :equality :time)
+    (:requirements 
+        :strips 
+        :fluents 
+        :durative-actions 
+        :typing 
+        :conditional-effects 
+        :negative-preconditions  
+        :equality 
+    )
 
     (:types 
         waiter

@@ -1,5 +1,4 @@
 ;Header and description
-
 (define (domain bar)
 
     (:requirements 
@@ -340,7 +339,7 @@
         :precondition (and 
             (toServe ?t)
             (>= (- (numDrinkServed ?t) (numDrink ?t)) 0)
-            (< (- (numDrinkServed ?t) (numDrink ?t))1)
+            (< (- (numDrinkServed ?t) (numDrink ?t)) 1)
             (< (numDrinkToConsume ?t) 1)
             (< (numBiscuit ?t) 1)
         )

@@ -58,6 +58,7 @@
         (numDrink ?t -location) ;total number of drinks
         (numDrinkServed ?t -location) ;number of drinks served
         (numDrinkToConsume ?t -location) ;number of drinks to consume
+        (surfaceTable ?t -location) ;surface of table
     )
 
     ;action for loading the tray with cold drinks
@@ -439,7 +440,7 @@
     ;durative actions for cleaning tables
     (:durative-action cleanTable    
         :parameters (?t -location ?w -waiter)
-        :duration (= ?duration 2)
+        :duration (= ?duration (2 * surfaceTable ?t))
         :condition (and 
             (at start (isAt ?w ?t))
             (at start (isDirty ?t))

@@ -28,6 +28,11 @@
         (= (connection table4 table2) 1)
         (= (connection table4 table3) 1)
 
+        (= (surfaceTable table1) 1)
+        (= (surfaceTable table2) 1)
+        (= (surfaceTable table3) 2)
+        (= (surfaceTable table4) 1)
+
         (= (waiterSpeed w1) 2)
         (= (waiterSpeed w2) 2)
 

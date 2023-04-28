@@ -27,21 +27,21 @@
     (:predicates 
         (isAt ?w -waiter ?loc -location) ;used to identify location of waiter(s)
         (isOnCold ?d -drinkCold ?loc -location) ;used to identify location of cold drink
-        (isOnHot ?d -drinkHot ?loc -location) ;same as above, but for hot drinks
+        (isOnHot ?d -drinkHot ?loc -location) ;used to identify location of hot drink
         (isOn ?x -object ?l -location) ;used for the tray when is onGrabber
         (isDirty ?t -location) ;when the table is to clean
         (cleaning ?w -waiter) ;when the waiter is cleaning, therefore it can't move
         (toPrepareCold ?d -drinkCold ?t -location) ;correlate a cold dink with the table of the order, deactivate after finishing preparation and activate toServe
-        (toPrepareHot ?d -drinkHot ?t -location) ;same as above, but for hot drinks
+        (toPrepareHot ?d -drinkHot ?t -location) ;correlate a hot dink with the table of the order, deactivate after finishing preparation and activate toServe
         (toServeCold ?d -drinkCold ?t -location) ;correlate a cold dink with the table where it must be served
-        (toServeHot ?d -drinkHot ?t -location) ;same as above, but for hot drinks
+        (toServeHot ?d -drinkHot ?t -location) ;correlate a hot dink with the table where it must be served
         (free ?b -object) ;used for waiter(s) and barista or for tables cleaned
         (toServeBiscuit ?t -location) ;biscuit is held by a waiter and must be served at table t
         (serveTable ?w -waiter ?t -location) ;to assign dinamically at every problem, which waiter should serve which table
         (biscuitGrabbed ?grab -location) ;to avoid bug where robot pick tray, load biscuit on it, drops it and then proceeds to serve it as if the biscuit would be onGrabber
         (occupied ?t -location) ;used to alert other waiters that a place is occupied by another waiter
         (assigned ?t -location) ;to prevent assignation to multiple waiters
-        (belongs ?grab -location ?w -waiter) ;for differenciate grabbers of two waiters
+        (belongs ?grab -location ?w -waiter) ;to differenciate grabbers of two waiters
         (toServe ?t -location) ;table that has to be served
         (consumeCold ?d -drinkCold ?t -location) ;used to trigger process of consuming a drink cold
         (consumeHot ?d -drinkHot ?t -location) ;used to trigger process of consuming a drink hot
@@ -60,7 +60,7 @@
         (numDrinkToConsume ?t -location) ;number of drinks to consume
     )
 
-    ;action for load the tray with cold drinks
+    ;action for loading the tray with cold drinks
     (:action loadCold
         :parameters (?d -drinkCold ?w -waiter ?grab -location)
         :precondition (and 
@@ -77,7 +77,7 @@
         )
     )
     
-    ;same as above, but for hot drinks
+    ;action for loading the tray with hot drinks
     (:action loadHot
         :parameters (?d -drinkHot ?w -waiter ?grab -location)
         :precondition (and 
@@ -94,7 +94,7 @@
         )
     )
     
-    ;same above, but for biscuits
+    ;action for loading the tray with biscuit
     (:action loadBiscuit
         :parameters (?w -waiter ?t -location ?grab -location)
         :precondition (and 
@@ -110,7 +110,7 @@
         )
     )
     
-    ;action for pick the tray
+    ;action to pick the tray
     (:action pickTray
         :parameters (?w -waiter ?grab -location)
         :precondition (and 
@@ -126,7 +126,7 @@
         )
     )
     
-    ;action for release the tray
+    ;action to release the tray
     (:action dropTray
         :parameters (?w -waiter ?grab -location)
         :precondition (and 
@@ -141,7 +141,7 @@
         )
     )
     
-    ;action for grab a cold drink
+    ;action for grabbing a cold drink
     (:action grabCold
         :parameters (?w -waiter ?d - drinkCold ?grab -location)
         :precondition (and 
@@ -157,7 +157,7 @@
         )
     )
 
-    ;same as above, but for hot drink
+    ;action for grabbing a hot drink
     (:action grabHot
         :parameters (?w -waiter ?d - drinkHot ?grab -location)
         :precondition (and 
@@ -173,7 +173,7 @@
         )
     )
 
-    ;same as above, but for single biscuit
+    ;action for grabing a buscuit
     (:action grabBiscuit
         :parameters (?w -waiter ?t -location ?grab -location)
         :precondition (and
@@ -189,7 +189,7 @@
         )
     )
     
-    ;actions for serve cold drinks on tray
+    ;action for serving cold drinks from the tray
     (:action serveColdTray
         :parameters (?w -waiter ?d -drinkCold ?t -location ?grab -location)
         :precondition (and 
@@ -211,7 +211,7 @@
         )
     )
     
-    ;same as above, but for hot drinks
+    ;action for serving hot drinks from the tray
     (:action serveHotTray
         :parameters (?w -waiter ?d -drinkHot ?t -location ?grab -location)
         :precondition (and 
@@ -233,7 +233,7 @@
         )
     )
 
-    ;same as above, but for biscuits
+    ;action for serving buiscuit from the tray
     (:action serveBiscuitTray
         :parameters (?w -waiter ?t -location ?grab -location)
         :precondition (and 
@@ -251,7 +251,7 @@
         )
     )
     
-    ;actions for serve cold drinks on grabber
+    ;action for serving cold drinks from the grabber
     (:action serveCold
         :parameters (?w -waiter ?d - drinkCold ?t - location ?grab -location)
         :precondition (and 
@@ -271,7 +271,7 @@
         )
     )
     
-    ;same as above, but for hot drinks
+    ;action for serving hot drinks from the grabber
     (:action serveHot
         :parameters (?w -waiter ?d - drinkHot ?t - location ?grab -location)
         :precondition (and 
@@ -291,7 +291,7 @@
         )
     )
 
-    ;same as above, but for biscuits
+    ;action for serving biscuit from the grabber
     (:action serveBiscuit
         :parameters (?w -waiter ?t -location ?grab -location)
         :precondition (and 
@@ -311,7 +311,7 @@
         )
     )
     
-    ;action for finish consumation of cold drinks
+    ;action for finishing consumation of cold drinks
     (:action finishConsumationCold
         :parameters (?d - drinkCold ?t -location)
         :precondition  
@@ -322,7 +322,7 @@
         )
     )
 
-    ;same as above, but for hot drinks
+    ;action for finishing consumation of hot drinks
     (:action finishConsumationHot
         :parameters (?d - drinkHot ?t -location)
         :precondition 
@@ -347,7 +347,7 @@
             (isDirty ?t)
     )
 
-    ;action for assign waiter(s) to table
+    ;action to assign waiter(s) to table
     (:action assignTable
         :parameters (?w -waiter ?t -location)
         :precondition (and 
@@ -360,7 +360,7 @@
         )
     )
 
-    ;durative actions for consume drinks
+    ;durative actions for consuming cold drinks
     (:durative-action consumeDrinkCold
         :parameters (?d -drinkCold ?t -location)
         :duration (= ?duration 4)
@@ -372,7 +372,7 @@
         )
     )
     
-    ;same as above, but for hot drinks
+    ;durative actions for consuming hot drinks
     (:durative-action consumeDrinkHot
         :parameters (?d -drinkHot ?t -location)
         :duration (= ?duration 4)
@@ -419,7 +419,7 @@
         )
     )
     
-    ;same as above, but for hot drinks
+    ;durative action for preparing hot drinks
     (:durative-action prepareHot
         :parameters (?b -barista ?d -drinkHot ?t -location)
         :duration (= ?duration 5)

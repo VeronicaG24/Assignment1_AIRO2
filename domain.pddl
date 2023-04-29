@@ -440,7 +440,7 @@
     ;durative actions for cleaning tables
     (:durative-action cleanTable    
         :parameters (?t -location ?w -waiter)
-        :duration (= ?duration (*(surfaceTable ?t)2))
+        :duration (= ?duration (* (surfaceTable ?t) 2))
         :condition (and 
             (at start (isAt ?w ?t))
             (at start (isDirty ?t))

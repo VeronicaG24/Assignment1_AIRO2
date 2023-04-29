@@ -1,19 +1,19 @@
 First assignment AIRo2
 ================================
 
-This is a possible implementation of the first assignment of Artificial Intelligence for Robotics 2 couse. 
+This is a possible implementation of the first assignment of Artificial Intelligence for Robotics 2 course. 
 
 The goal of this assignment is to model a robotic coffee shop solution for managing the orders made by the customers.
 
-The repository is organized as follows:
+The repository is organized as it follows:
 * The `requirements.pdf` file containing all the requiremnts of the assigment.
 * The `domain.pddl` file with all the actions, durative-actions, types, predicates and functions to reach the goal of each problem, respecting the specific requests of the assignment.
 * The `problem1.pddl` file contining the initialization and the goal for reaching the first problem specifications.
 * The `problem2.pddl` file contining the initialization and the goal for reaching the second problem specifications.
 * The `problem3.pddl` file contining the initialization and the goal for reaching the third problem specifications.
 * The `problem4.pddl` file contining the initialization and the goal for reaching the fourth problem specifications.
-* The `lpg++` executable to use for planning with LPG++.
-* The `lpg-td` executable to use for planning with LPG-TD.
+* The `lpg++` executable, to use for planning with LPG++.
+* The `lpg-td` executable, to use for planning with LPG-TD.
 * The `README_LPGTD` file with specific instruction of LPG-TD planner.
 * The `README.md` file with specifications of the solution proposed.
 
@@ -54,5 +54,5 @@ The domain and the problem files are designed to respect the following requireme
     4. There are 2 customers at table 4 and 2 customers at table 1: they all ordered cold drinks. There are also 4 customers at table 3: they all ordered warm drinks. Table 4 needs to be cleaned.
 * Domain:
 
-    contains all the actions, durative-actions, types, predicates and functions to reach the goal of each problem, respecting the specific requests of the assignment.
+    Contains all the actions, durative-actions, types, predicates and functions to reach the goal of each problem, respecting the specific requests of the assignment.
 

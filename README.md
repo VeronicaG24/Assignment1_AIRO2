@@ -46,10 +46,11 @@ Structure of the code
 The domain and the problem files are designed to respect the following requirements:
 
 * Problems:
-1. There are 2 customers at table 2: they ordered 2 cold drinks. Tables 3 and 4 need to be cleaned. 
-2. There are 4 customers at table 3: they ordered 2 cold drinks and 2 warm drinks. Table 1 needs to be cleaned.
-3. There are 2 customers at table 4: they ordered 2 warm drinks. There are also 2 customers at table 1: they ordered 2 warm drinks. Table 3 needs to be cleaned.
-4. There are 2 customers at table 4 and 2 customers at table 1: they all ordered cold drinks. There are also 4 customers at table 3: they all ordered warm drinks. Table 4 needs to be cleaned.
-* Domain: \\
+    1. There are 2 customers at table 2: they ordered 2 cold drinks. Tables 3 and 4 need to be cleaned. 
+    2. There are 4 customers at table 3: they ordered 2 cold drinks and 2 warm drinks. Table 1 needs to be cleaned.
+    3. There are 2 customers at table 4: they ordered 2 warm drinks. There are also 2 customers at table 1: they ordered 2 warm drinks. Table 3 needs to be cleaned.
+    4. There are 2 customers at table 4 and 2 customers at table 1: they all ordered cold drinks. There are also 4 customers at table 3: they all ordered warm drinks. Table 4 needs to be cleaned.
+* Domain:
+
     contains all the actions, durative-actions, types, predicates and functions to reach the goal of each problem, respecting the specific requests of the assignment.
 

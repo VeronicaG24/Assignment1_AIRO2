@@ -40,6 +40,8 @@ Then from the folder, run the following command:
     ./lpg++ -o domain.pddl -f <problem file>.pddl -n 1
     ```
 
+`<problem file>.pddl` needs to be substitute with the specific name of the file of the problem you want to solve.
+
 Structure of the code
 ----------------------
 

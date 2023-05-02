@@ -2,7 +2,7 @@
     (:objects 
         b -barista
         w1 w2 -waiter
-        d1 d2 - drinkCold
+        d1 d2 -drinkCold
         grab1 grab2 -location
     )
 

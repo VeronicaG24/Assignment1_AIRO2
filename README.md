@@ -40,7 +40,7 @@ Then from the folder, run the following command:
     ./lpg++ -o domain.pddl -f <problem file>.pddl -n 1
     ```
 
-`<problem file>.pddl` needs to be substitute with the specific name of the file of the problem you want to solve.
+`<problem file>.pddl` needs to be substitute with the specific name of the file of the problem you want to solve. Remember that the commands, which are reported above, are some of possibile settings wherewith it is possible to generate the solutions for the problems; there are others that are discussed in the report and here we have only reported the ones are used for generates the solution files in the our zip.
 
 Structure of the code
 ----------------------

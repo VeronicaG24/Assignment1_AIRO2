@@ -144,7 +144,7 @@
     
     ;action for grabbing a cold drink
     (:action grabCold
-        :parameters (?w -waiter ?d - drinkCold ?grab -location)
+        :parameters (?w -waiter ?d -drinkCold ?grab -location)
         :precondition (and 
             (isAt ?w bar)
             (isOnCold ?d bar)
@@ -160,7 +160,7 @@
 
     ;action for grabbing a hot drink
     (:action grabHot
-        :parameters (?w -waiter ?d - drinkHot ?grab -location)
+        :parameters (?w -waiter ?d -drinkHot ?grab -location)
         :precondition (and 
             (isAt ?w bar)
             (isOnHot ?d bar)
@@ -254,7 +254,7 @@
     
     ;action for serving cold drinks from the grabber
     (:action serveCold
-        :parameters (?w -waiter ?d - drinkCold ?t - location ?grab -location)
+        :parameters (?w -waiter ?d -drinkCold ?t -location ?grab -location)
         :precondition (and 
             (isAt ?w ?t)
             (belongs ?grab ?w)
@@ -274,7 +274,7 @@
     
     ;action for serving hot drinks from the grabber
     (:action serveHot
-        :parameters (?w -waiter ?d - drinkHot ?t - location ?grab -location)
+        :parameters (?w -waiter ?d -drinkHot ?t -location ?grab -location)
         :precondition (and 
             (isAt ?w ?t)
             (belongs ?grab ?w)
@@ -314,7 +314,7 @@
     
     ;action for finishing consumation of cold drinks
     (:action finishConsumationCold
-        :parameters (?d - drinkCold ?t -location)
+        :parameters (?d -drinkCold ?t -location)
         :precondition  
             (consumedCold ?d ?t)
         :effect (and 
@@ -325,7 +325,7 @@
 
     ;action for finishing consumation of hot drinks
     (:action finishConsumationHot
-        :parameters (?d - drinkHot ?t -location)
+        :parameters (?d -drinkHot ?t -location)
         :precondition 
             (consumedHot ?d ?t)
         :effect (and 

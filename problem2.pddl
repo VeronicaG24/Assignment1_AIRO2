@@ -2,8 +2,8 @@
     (:objects 
         b -barista
         w1 w2 -waiter
-        d1 d2 - drinkCold
-        d3 d4 - drinkHot
+        d1 d2 -drinkCold
+        d3 d4 -drinkHot
         grab1 grab2 -location
     )
 

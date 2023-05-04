@@ -6,7 +6,7 @@ This is a possible implementation of the first assignment of Artificial Intellig
 The goal of this assignment is to model a robotic coffee shop solution for managing the orders made by the customers.
 
 The repository is organized as it follows:
-* The `report.pdf` file with the report of the assignment.
+* The `report_groupD.pdf` file with the report of the assignment.
 * The `requirements.pdf` file containing all the requiremnts of the assigment.
 * The `domain.pddl` file with all the actions, durative-actions, types, predicates and functions to reach the goal of each problem, respecting the specific requests of the assignment.
 * The `problem1.pddl` file contining the initialization and the goal for reaching the first problem specifications.
